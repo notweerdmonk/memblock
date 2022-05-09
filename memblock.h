@@ -8,11 +8,11 @@ struct memblock {
   unsigned char *avail;
 };
 
-#define init_mem(name, mem, size) \
+#define init_mem(name, type, mem, size) \
   name.avail = (byte_ptr_type)mem; \
-  *(signed char*)(mem + size - 1) = 0xff; \
+  *(signed char*)(mem + (size - 1) * sizeof(type)) = 0xff; \
   for (signed char i = 0; i < size - 1; i++) \
-    *(signed char*)(mem + i) = sizeof(mem[0]);
+    *(signed char*)(mem + i * sizeof(type)) = sizeof(type);
 
 #define use_mem(type, block) ({ \
   type *__obj = 0; \

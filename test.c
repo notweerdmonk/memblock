@@ -3,21 +3,21 @@
 #include "memblock.h"
 
 int main() {
-  int array[10];
+  char array[42];
 
   struct memblock int_memblock;
-  init_mem(int_memblock, array, 10);
+  init_mem(int_memblock, int, array, 10);
 
-  int *p = (int*)use_mem(int, int_memblock);
-  int *q = (int*)use_mem(int, int_memblock);
-  int *r = (int*)use_mem(int, int_memblock);
-  int *s = (int*)use_mem(int, int_memblock);
-  int *t = (int*)use_mem(int, int_memblock);
-  int *u = (int*)use_mem(int, int_memblock);
-  int *v = (int*)use_mem(int, int_memblock);
-  int *w = (int*)use_mem(int, int_memblock);
-  int *x = (int*)use_mem(int, int_memblock);
-  int *y = (int*)use_mem(int, int_memblock);
+  int *p = use_mem(int, int_memblock);
+  int *q = use_mem(int, int_memblock);
+  int *r = use_mem(int, int_memblock);
+  int *s = use_mem(int, int_memblock);
+  int *t = use_mem(int, int_memblock);
+  int *u = use_mem(int, int_memblock);
+  int *v = use_mem(int, int_memblock);
+  int *w = use_mem(int, int_memblock);
+  int *x = use_mem(int, int_memblock);
+  int *y = use_mem(int, int_memblock);
 
   *p = 100;
   *q = 101;
@@ -31,16 +31,16 @@ int main() {
   *y = 109;
 
   printf("Data in memory locations:\n");
-  printf("%d\n", array[0]);
-  printf("%d\n", array[1]);
-  printf("%d\n", array[2]);
-  printf("%d\n", array[3]);
-  printf("%d\n", array[4]);
-  printf("%d\n", array[5]);
-  printf("%d\n", array[6]);
-  printf("%d\n", array[7]);
-  printf("%d\n", array[8]);
-  printf("%d\n", array[9]);
+  printf("%d\n", ((int*)array)[0]);
+  printf("%d\n", ((int*)array)[1]);
+  printf("%d\n", ((int*)array)[2]);
+  printf("%d\n", ((int*)array)[3]);
+  printf("%d\n", ((int*)array)[4]);
+  printf("%d\n", ((int*)array)[5]);
+  printf("%d\n", ((int*)array)[6]);
+  printf("%d\n", ((int*)array)[7]);
+  printf("%d\n", ((int*)array)[8]);
+  printf("%d\n", ((int*)array)[9]);
 
   int *z = (int*)use_mem(int, int_memblock);
   if (z == NULL) {
@@ -51,19 +51,19 @@ int main() {
   free_mem(u, int_memblock);
   free_mem(x, int_memblock);
 
-  int *a = (int*)use_mem(int, int_memblock);
+  int *a = use_mem(int, int_memblock);
   *a = 1001;
 
-  int *b = (int*)use_mem(int, int_memblock);
+  int *b = use_mem(int, int_memblock);
   *b = 9999;
 
-  int *c = (int*)use_mem(int, int_memblock);
+  int *c = use_mem(int, int_memblock);
   *c = 2020;
 
   printf("Data after reusing memory locations:\n");
-  printf("%d\n", array[8]);
-  printf("%d\n", array[5]);
-  printf("%d\n", array[2]);
+  printf("%d\n", ((int*)array)[8]);
+  printf("%d\n", ((int*)array)[5]);
+  printf("%d\n", ((int*)array)[2]);
 
   return 0;
 }
