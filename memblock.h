@@ -4,7 +4,7 @@
 
 #define byte_ptr_type unsigned char*
 
-struct static_memblock {
+struct memblock {
   unsigned char *avail;
 };
 

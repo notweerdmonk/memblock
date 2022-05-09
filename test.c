@@ -5,7 +5,7 @@
 int main() {
   int array[10];
 
-  struct static_memblock int_memblock;
+  struct memblock int_memblock;
   init_mem(int_memblock, array, 10);
 
   int *p = (int*)use_mem(int, int_memblock);
@@ -30,6 +30,7 @@ int main() {
   *x = 108;
   *y = 109;
 
+  printf("Data in memory locations:\n");
   printf("%d\n", array[0]);
   printf("%d\n", array[1]);
   printf("%d\n", array[2]);
@@ -43,7 +44,7 @@ int main() {
 
   int *z = (int*)use_mem(int, int_memblock);
   if (z == NULL) {
-    printf("memblock exhausted\n");
+    printf("Memblock exhausted!\n");
   }
 
   free_mem(r, int_memblock);
@@ -59,6 +60,7 @@ int main() {
   int *c = (int*)use_mem(int, int_memblock);
   *c = 2020;
 
+  printf("Data after reusing memory locations:\n");
   printf("%d\n", array[8]);
   printf("%d\n", array[5]);
   printf("%d\n", array[2]);
