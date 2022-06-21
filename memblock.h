@@ -25,34 +25,70 @@
 #ifndef _MEMBLOCK_H_
 #define _MEMBLOCK_H_
 
+#define MAX_ELEMENT_SIZE 1
+
 #define byte_ptr_type unsigned char*
+
+#if MAX_ELEMENT_SIZE == 1
+
+#define arithmetic_type signed char
+#define MAX_MEMORY_SIZE 0x7f
+
+#elif MAX_ELEMENT_SIZE == 2
+
+#define arithmetic_type signed short
+#define MAX_MEMORY_SIZE 0x7fff
+
+#elif MAX_ELEMENT_SIZE == 4
+
+#define arithmetic_type signed int
+#define MAX_MEMORY_SIZE 0x7fffffff
+
+#elif MAX_ELEMENT_SIZE == 8
+
+#define arithmetic_type signed long
+#define MAX_MEMORY_SIZE 0x7fffffffffffffff
+
+#else
+#error Invalid MAX_ELEMENT_SIZE
+#endif
+
+#define _chk_bounds(ptr, start, end) \
+  (((byte_ptr_type)ptr >= start) && ((byte_ptr_type)ptr <= end))
 
 struct memblock {
   unsigned char *avail;
+  unsigned char *start;
+  unsigned char *end;
 };
 
-#define init_mem(name, type, mem, size) \
-  name.avail = (byte_ptr_type)mem; \
-  *(signed char*)(mem + (size - 1) * sizeof(type)) = 0xff; \
-  for (signed char i = 0; i < size - 1; i++) \
-    *(signed char*)(mem + i * sizeof(type)) = sizeof(type);
+#define init_mem(name, type, mem, size) ({ \
+  if (size < MAX_MEMORY_SIZE) { \
+    name.avail = name.start = (byte_ptr_type)mem; \
+    name.end = (byte_ptr_type)mem + (size - 1) * sizeof(type); \
+    *(arithmetic_type*)name.end = -1; \
+    for (arithmetic_type i = 0; i < size - 1; i++) \
+      *((arithmetic_type*)mem + i * sizeof(type)) = sizeof(type); \
+  } else { \
+    name.avail = 0; \
+  } \
+  name.avail; \
+})
 
 #define use_mem(type, block) ({ \
   type *__obj = 0; \
-  if (block.avail) { \
+  if (block.avail && _chk_bounds(block.avail, block.start, block.end)) { \
     __obj = (type *)block.avail; \
-    if (*(signed char*)block.avail == -1) \
-      block.avail = 0; \
-    else \
-      block.avail += *(signed char*)block.avail; \
+    block.avail = (*(arithmetic_type*)block.avail == -1) ? \
+    0 : block.avail + *(arithmetic_type*)block.avail; \
   } \
   __obj; \
 })
 
 #define free_mem(pobj, block) \
-  if (pobj) { \
-    *(signed char*)pobj = (!block.avail) ? \
-      0xff : (signed char)(block.avail - (byte_ptr_type)pobj); \
+  if (pobj && _chk_bounds(pobj, block.start, block.end)) { \
+    *(arithmetic_type*)pobj = (!block.avail) ? \
+      -1 : (arithmetic_type)(block.avail - (byte_ptr_type)pobj); \
     block.avail = (byte_ptr_type)pobj; \
   }
 
