@@ -25,32 +25,35 @@
 #ifndef _MEMBLOCK_H_
 #define _MEMBLOCK_H_
 
-#define MAX_ELEMENT_SIZE 1
+/* Define MIN_ELEMENT_SIZE as per need */
+#ifndef MIN_ELEMENT_SIZE
+#define MIN_ELEMENT_SIZE 1
+#endif
 
 #define byte_ptr_type unsigned char*
 
-#if MAX_ELEMENT_SIZE == 1
+#if MIN_ELEMENT_SIZE == 1
 
 #define arithmetic_type signed char
 #define MAX_MEMORY_SIZE 0x7f
 
-#elif MAX_ELEMENT_SIZE == 2
+#elif MIN_ELEMENT_SIZE == 2
 
 #define arithmetic_type signed short
 #define MAX_MEMORY_SIZE 0x7fff
 
-#elif MAX_ELEMENT_SIZE == 4
+#elif MIN_ELEMENT_SIZE == 4
 
 #define arithmetic_type signed int
 #define MAX_MEMORY_SIZE 0x7fffffff
 
-#elif MAX_ELEMENT_SIZE == 8
+#elif MIN_ELEMENT_SIZE == 8
 
 #define arithmetic_type signed long
 #define MAX_MEMORY_SIZE 0x7fffffffffffffff
 
 #else
-#error Invalid MAX_ELEMENT_SIZE
+#error Invalid MIN_ELEMENT_SIZE
 #endif
 
 #define _chk_bounds(ptr, start, end) \
