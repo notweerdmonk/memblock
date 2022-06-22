@@ -56,17 +56,17 @@
 #error Invalid MIN_ELEMENT_SIZE
 #endif
 
+struct memblock {
+  byte_ptr_type avail;
+  byte_ptr_type start;
+  byte_ptr_type end;
+};
+
 #define _chk_bounds(ptr, start, end) \
   (((byte_ptr_type)ptr >= start) && ((byte_ptr_type)ptr <= end))
 
-struct memblock {
-  unsigned char *avail;
-  unsigned char *start;
-  unsigned char *end;
-};
-
 #define init_mem(name, type, mem, size) ({ \
-  if (size < MAX_MEMORY_SIZE) { \
+  if (size <= MAX_MEMORY_SIZE) { \
     name.avail = name.start = (byte_ptr_type)mem; \
     name.end = (byte_ptr_type)mem + (size - 1) * sizeof(type); \
     *(arithmetic_type*)name.end = -1; \
