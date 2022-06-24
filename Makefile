@@ -2,7 +2,7 @@
 all: test
 
 test: memblock.h test.c
-	gcc -Wall -ggdb -o test test.c
+	gcc -Wall -ggdb -I. -o test test.c
 
 exp:
 	gcc -fno-stack-protector -o exploit exploit.c
