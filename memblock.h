@@ -73,6 +73,12 @@ struct memblock {
 #define _chk_bounds(ptr, start, end) \
   (((byte_ptr_type)ptr >= start) && ((byte_ptr_type)ptr <= end))
 
+/*
+ * name: name of struct memblock
+ * type: type of chunks
+ * mem: block of allocated memory
+ * size: number of chunks to be used from memory block
+ */
 #define init_mem(name, type, mem, size) ({ \
   if (size <= MAX_MEMORY_SIZE) { \
     name.avail = name.start = (byte_ptr_type)mem; \
@@ -86,6 +92,10 @@ struct memblock {
   name.avail; \
 })
 
+/*
+ * type: type of chunk
+ * block: name of struct memblock
+ */
 #define use_mem(type, block) ({ \
   type *__obj = 0; \
   if (block.avail && _chk_bounds(block.avail, block.start, block.end)) { \
@@ -96,6 +106,10 @@ struct memblock {
   __obj; \
 })
 
+/*
+ * pobj: pointer to memory to be freed
+ * block: name of struct memblock
+ */
 #define free_mem(pobj, block) \
   if (pobj && _chk_bounds(pobj, block.start, block.end)) { \
     if (!block.avail) \

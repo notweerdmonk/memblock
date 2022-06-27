@@ -76,7 +76,7 @@ struct foo {
 };
 
 void test2() {
-  int *array = (int*)malloc(64 * sizeof(int));
+  int *array = (int*)malloc(4 * sizeof(struct foo));
 
   struct memblock foo_memblock;
   init_mem(foo_memblock, struct foo, array, 4);
@@ -128,7 +128,7 @@ void test2() {
 }
 
 void test3() {
-  char array[16];
+  char array[8];
 
   struct memblock char_memblock;
 
