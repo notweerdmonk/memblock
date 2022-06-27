@@ -45,7 +45,7 @@ void test1() {
   printf("%d\n", ((int*)array)[8]);
   printf("%d\n", ((int*)array)[9]);
 
-  int *z = (int*)use_mem(int, int_memblock);
+  int *z = use_mem(int, int_memblock);
   if (z == NULL) {
     printf("Memblock exhausted\n");
   }
@@ -127,9 +127,54 @@ void test2() {
   free(array);
 }
 
+void test3() {
+  char array[16];
+
+  struct memblock char_memblock;
+
+  init_mem(char_memblock, char, array, 4);
+
+  char *p = use_mem(char, char_memblock);
+  char *q = use_mem(char, char_memblock);
+  char *r = use_mem(char, char_memblock);
+  char *s = use_mem(char, char_memblock);
+
+  *p = 'a';
+  *q = 'b';
+  *r = 'c';
+  *s = 'd';
+
+  printf("test 1\n");
+
+  printf("Data in memory locations:\n");
+  printf("%c\n", ((char*)array)[0]);
+  printf("%c\n", ((char*)array)[1]);
+  printf("%c\n", ((char*)array)[2]);
+  printf("%c\n", ((char*)array)[3]);
+
+  char *t = use_mem(char, char_memblock);
+  if (t == NULL) {
+    printf("Memblock exhausted\n");
+  }
+
+  free_mem(p, char_memblock);
+  free_mem(q, char_memblock);
+
+  char *u = use_mem(char, char_memblock);
+  *u = 'e';
+
+  char *v = use_mem(char, char_memblock);
+  *v = 'f';
+
+  printf("Data after reusing memory locations:\n");
+  printf("%c\n", ((char*)array)[1]);
+  printf("%c\n", ((char*)array)[0]);
+}
+
 int main() {
   test1();
   test2();
+  test3();
 
   return 0;
 }
