@@ -133,3 +133,10 @@ Here is an insight of how memblock works internally:
  |______________|______________|______________|______________|
 
 ```
+
+The macro `MIN_ELEMENT_SIZE` determines the minimum size of memory used to store the offset values, therefore decides the maximum size of the memory pool. The size of the type used to define the memory block and the size of chunks to be used should not be greater than `MIN_ELEMENT_SIZE`. It defaults to 1 but can be defined before including the header `memblock.h`. Accepted values are 1, 2, 4 and 8.
+
+```c
+#define MIN_ELEMENT_SIZE 2
+#include <memblock.h>
+```

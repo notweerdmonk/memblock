@@ -85,7 +85,7 @@ struct memblock {
     name.end = (byte_ptr_type)mem + (size - 1) * sizeof(type); \
     *(guard_value_type*)name.end = GUARD_VALUE; \
     for (arithmetic_type i = 0; i < size - 1; i++) \
-      *((arithmetic_type*)mem + i * sizeof(type)) = sizeof(type); \
+      *(arithmetic_type*)((byte_ptr_type)mem + i * sizeof(type)) = sizeof(type); \
   } else { \
     name.avail = 0; \
   } \
