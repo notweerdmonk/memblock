@@ -37,9 +37,9 @@ if (t != NULL) {
 And free any chunk so that it can be reused without bookkeeping:
 
 ```c
-free(p, mempool);
-free(q, mempool);
-free(s, mempool);
+free_mem(p, mempool);
+free_mem(q, mempool);
+free_mem(s, mempool);
 ```
 
 Consider checking `memblock.h` for documentation on the arguments and `test.c` for examples of usage.
