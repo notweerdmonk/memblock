@@ -25,43 +25,45 @@
 #ifndef _MEMBLOCK_H_
 #define _MEMBLOCK_H_
 
-/* Define MIN_ELEMENT_SIZE as per need */
-#ifndef MIN_ELEMENT_SIZE
-#define MIN_ELEMENT_SIZE 1
+#include <stdint.h>
+
+/* Define MEMBLOCK_MIN_ELEMENT_SIZE as per need */
+#ifndef MEMBLOCK_MIN_ELEMENT_SIZE
+#define MEMBLOCK_MIN_ELEMENT_SIZE 1
 #endif
 
-#define byte_ptr_type unsigned char*
+typedef uint8_t* byte_ptr_type;
 
-#if MIN_ELEMENT_SIZE == 1
+#if MEMBLOCK_MIN_ELEMENT_SIZE == 1
 
-#define arithmetic_type  signed char
-#define MAX_MEMORY_SIZE  0x7f
-#define guard_value_type unsigned char
-#define GUARD_VALUE      0x80
+typedef int8_t arithmetic_type;
+typedef uint8_t guard_value_type;
+const guard_value_type MEMBLOCK_GUARD_VALUE = 0x80;
+enum { MAX_MEMORY_SIZE = 0x7f };
 
-#elif MIN_ELEMENT_SIZE == 2
+#elif MEMBLOCK_MIN_ELEMENT_SIZE == 2
 
-#define arithmetic_type  signed short
-#define MAX_MEMORY_SIZE  0x7fff
-#define guard_value_type unsigned short
-#define GUARD_VALUE      0x8000
+typedef int16_t arithmetic_type;
+typedef uint16_t guard_value_type;
+const guard_value_type MEMBLOCK_GUARD_VALUE = 0x8000;
+enum { MAX_MEMORY_SIZE = 0x7fff };
 
-#elif MIN_ELEMENT_SIZE == 4
+#elif MEMBLOCK_MIN_ELEMENT_SIZE == 4
 
-#define arithmetic_type  signed int
-#define MAX_MEMORY_SIZE  0x7fffffff
-#define guard_value_type unsigned int
-#define GUARD_VALUE      0x80000000
+typedef int32_t arithmetic_type;
+typedef uint32_t guard_value_type;
+const guard_value_type MEMBLOCK_GUARD_VALUE = 0x80000000;
+enum { MAX_MEMORY_SIZE = 0x7fffffff };
 
-#elif MIN_ELEMENT_SIZE == 8
+#elif MEMBLOCK_MIN_ELEMENT_SIZE == 8
 
-#define arithmetic_type  signed long
-#define MAX_MEMORY_SIZE  0x7fffffffffffffff
-#define guard_value_type unsigned long
-#define GUARD_VALUE      0x8000000000000000
+typedef int64_t arithmetic_type;
+typedef uint64_t guard_value_type;
+const guard_value_type MEMBLOCK_GUARD_VALUE = 0x8000000000000000;
+enum { MAX_MEMORY_SIZE = 0x7fffffffffffffff };
 
 #else
-#error Invalid MIN_ELEMENT_SIZE
+#error Invalid MEMBLOCK_MIN_ELEMENT_SIZE
 #endif
 
 struct memblock {
@@ -83,7 +85,7 @@ struct memblock {
   if (size <= MAX_MEMORY_SIZE) { \
     name.avail = name.start = (byte_ptr_type)mem; \
     name.end = (byte_ptr_type)mem + (size - 1) * sizeof(type); \
-    *(guard_value_type*)name.end = GUARD_VALUE; \
+    *(guard_value_type*)name.end = MEMBLOCK_GUARD_VALUE; \
     for (arithmetic_type i = 0; i < size - 1; i++) \
       *(arithmetic_type*)((byte_ptr_type)mem + i * sizeof(type)) = sizeof(type); \
   } else { \
@@ -100,7 +102,7 @@ struct memblock {
   type *__obj = 0; \
   if (block.avail && _chk_bounds(block.avail, block.start, block.end)) { \
     __obj = (type *)block.avail; \
-    block.avail = (*(guard_value_type*)block.avail == GUARD_VALUE) ? \
+    block.avail = (*(guard_value_type*)block.avail == MEMBLOCK_GUARD_VALUE) ? \
     0 : block.avail + *(arithmetic_type*)block.avail; \
   } \
   __obj; \
@@ -113,7 +115,7 @@ struct memblock {
 #define free_mem(pobj, block) \
   if (pobj && _chk_bounds(pobj, block.start, block.end)) { \
     if (!block.avail) \
-      *(guard_value_type*)pobj = GUARD_VALUE; \
+      *(guard_value_type*)pobj = MEMBLOCK_GUARD_VALUE; \
     else \
       *(arithmetic_type*)pobj = \
         (arithmetic_type)(block.avail - (byte_ptr_type)pobj); \
