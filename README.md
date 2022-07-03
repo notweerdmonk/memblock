@@ -134,9 +134,11 @@ Here is an insight of how memblock works internally:
 
 ```
 
-The macro `MIN_ELEMENT_SIZE` determines the minimum size of memory used to store the offset values, therefore decides the maximum size of the memory pool. The size of chunks to be used should not be smaller than `MIN_ELEMENT_SIZE`. It defaults to 1 but can be defined before including the header `memblock.h`. Accepted values are 1, 2, 4 and 8.
+The macro `MEMBLOCK_MIN_ELEMENT_SIZE` determines the minimum size of memory used to store the offset values, therefore decides the maximum size of the memory pool. The size of chunks to be used should not be smaller than `MEMBLOCK_MIN_ELEMENT_SIZE`. It defaults to 1 but can be defined before including the header `memblock.h`. Accepted values are 1, 2, 4 and 8.
 
 ```c
-#define MIN_ELEMENT_SIZE 2
+#define MEMBLOCK_MIN_ELEMENT_SIZE 2
 #include <memblock.h>
 ```
+
+The macros use statement expressions which is a non-standard extension provided by GNU GCC.
