@@ -1,5 +1,4 @@
-memblock
-========
+# memblock
 
 A memory pool manager.
 
@@ -141,4 +140,7 @@ The macro `MEMBLOCK_MIN_ELEMENT_SIZE` determines the minimum size of memory used
 #include <memblock.h>
 ```
 
-The macros use statement expressions which is a non-standard extension provided by GNU GCC.
+##### Footnotes
+
+- The macros use statement expressions which is a non-standard extension provided by GNU GCC.
+- Pointers are cast to different types for arithmetic and `use_mem` casts memory to pointer type requested by user. Suggestion is to add `-fno-strict-aliasing` option if the compiler gives warnings or there is any undefined behaviour in the program.
