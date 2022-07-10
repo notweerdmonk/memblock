@@ -144,7 +144,7 @@ void test3() {
   *r = 'c';
   *s = 'd';
 
-  printf("test 1\n");
+  printf("test 3\n");
 
   printf("Data in memory locations:\n");
   printf("%c\n", ((char*)array)[0]);
