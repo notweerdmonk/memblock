@@ -71,7 +71,7 @@ Here is an insight of how memblock works internally:
  |     data     | sizeof(type) | sizeof(type) | guard value  |
  |______________|______________|______________|______________|
 
- When avail is pointing the the last element it contains a guard value.
+ The last element contains a guard value instead of an offset value.
  
        start                                        end
          |                                         avail
