@@ -72,21 +72,29 @@ struct memblock {
   byte_ptr_type end;
 };
 
-/* This macro does bounds checking while using or discarding chunks */
+/**
+ * @brief This macro does bounds checking while using or discarding chunks.
+ * @param ptr The pointer to check.
+ * @param start The start pointer of a memblock.
+ * @param end The end pointer of a memblock.
+ */
 #define _chk_bounds(ptr, start, end) \
   (((byte_ptr_type)ptr >= start) && ((byte_ptr_type)ptr <= end))
 
-/*
- * init_mem initializes the memory pool. It sets the start and end pointers as
- * per the size and number of chunks requested and the avail pointer is set to
- * point to the first chunk. A guard value is written at the last chunk. A chain
- * of links is created from the starting chunk by writing at each chunk, the
- * offset to the next chunk.
+/**
+ * @brief init_mem initializes the memory pool.
  *
- * name: name of struct memblock
- * type: type of chunks
- * mem: block of allocated memory
- * size: number of chunks to be used from memory block
+ * It sets the start and end pointers as per the size and number of chunks
+ * requested and the avail pointer is set to point to the first chunk. A guard
+ * value is written at the last chunk. A chain of links is created from the
+ * starting chunk by writing at each chunk, the offset to the next chunk.
+ *
+ * @param name Name of struct memblock.
+ * @param type Type of chunks.
+ * @param mem Block of allocated memory.
+ * @param size Number of chunks to be used from memory block.
+ *
+ * @return A pointer to the first available memory location.
  */
 #define init_mem(name, type, mem, size) ({ \
   if (size <= MAX_MEMORY_SIZE) { \
@@ -101,13 +109,18 @@ struct memblock {
   name.avail; \
 })
 
-/*
- * use_mem provides a pointer to a chunk of memory. avail pointer is set to
- * point to the next available chunk. It is set to zero when the memory pool has
- * been exhausted so that a null pointer is provided for subsequent requests.
+/**
+ * @brief use_mem provides a pointer to a chunk of memory.
  *
- * type: type of chunk
- * block: name of struct memblock
+ * The avail pointer is set to point to the next available chunk. It is set to
+ * zero when the memory pool has been exhausted so that a null pointer is
+ * provided for subsequent requests.
+ *
+ * @param type Type of chunk.
+ * @param block Name of struct memblock.
+ *
+ * @return A pointer of requested type pointing to a chunk of memory or zero if
+ * the memory pool has been exhausted.
  */
 #define use_mem(type, block) ({ \
   type *__obj = 0; \
@@ -119,14 +132,15 @@ struct memblock {
   __obj; \
 })
 
-/*
- * free_mem relinquishes a chunk of memory. If the memory pool has been
- * exhaused the guard value is written at the first chunk that is freed,
- * otherwise the offset to the previous available chunk is written. avail
- * pointer is set to point to the recently freed chunk.
+/**
+ * @brief free_mem relinquishes a chunk of memory.
  *
- * pobj: pointer to memory to be freed
- * block: name of struct memblock
+ * If the memory pool has been exhaused the guard value is written at the first
+ * chunk that is freed, otherwise the offset to the previous available chunk is
+ * written. avail pointer is set to point to the recently freed chunk.
+ *
+ * @param pobj Pointer to memory to be freed.
+ * @param block Name of struct memblock.
  */
 #define free_mem(pobj, block) \
   if (pobj && _chk_bounds(pobj, block.start, block.end)) { \
