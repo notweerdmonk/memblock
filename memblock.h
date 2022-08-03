@@ -38,28 +38,28 @@ typedef uint8_t* byte_ptr_type;
 
 typedef int8_t arithmetic_type;
 typedef uint8_t guard_value_type;
-const guard_value_type MEMBLOCK_GUARD_VALUE = 0x80;
+static const guard_value_type MEMBLOCK_GUARD_VALUE = 0x80;
 enum { MAX_MEMORY_SIZE = 0x7f };
 
 #elif MEMBLOCK_MIN_ELEMENT_SIZE == 2
 
 typedef int16_t arithmetic_type;
 typedef uint16_t guard_value_type;
-const guard_value_type MEMBLOCK_GUARD_VALUE = 0x8000;
+static const guard_value_type MEMBLOCK_GUARD_VALUE = 0x8000;
 enum { MAX_MEMORY_SIZE = 0x7fff };
 
 #elif MEMBLOCK_MIN_ELEMENT_SIZE == 4
 
 typedef int32_t arithmetic_type;
 typedef uint32_t guard_value_type;
-const guard_value_type MEMBLOCK_GUARD_VALUE = 0x80000000;
+static const guard_value_type MEMBLOCK_GUARD_VALUE = 0x80000000;
 enum { MAX_MEMORY_SIZE = 0x7fffffff };
 
 #elif MEMBLOCK_MIN_ELEMENT_SIZE == 8
 
 typedef int64_t arithmetic_type;
 typedef uint64_t guard_value_type;
-const guard_value_type MEMBLOCK_GUARD_VALUE = 0x8000000000000000;
+static const guard_value_type MEMBLOCK_GUARD_VALUE = 0x8000000000000000;
 enum { MAX_MEMORY_SIZE = 0x7fffffffffffffff };
 
 #else
