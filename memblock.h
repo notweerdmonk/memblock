@@ -22,6 +22,12 @@
   SOFTWARE.
 */
 
+/**
+ * @file memblock.h
+ * @author notweerdmonk
+ * @brief A macro-only memory pool manager for C/C++ programs.
+ */
+
 #ifndef _MEMBLOCK_H_
 #define _MEMBLOCK_H_
 
@@ -96,18 +102,19 @@ struct memblock {
  *
  * @return A pointer to the first available memory location.
  */
-#define init_mem(name, type, mem, size) ({ \
-  if (size <= MAX_MEMORY_SIZE) { \
-    name.avail = name.start = (byte_ptr_type)mem; \
-    name.end = (byte_ptr_type)mem + (size - 1) * sizeof(type); \
-    *(guard_value_type*)name.end = MEMBLOCK_GUARD_VALUE; \
-    for (arithmetic_type i = 0; i < size - 1; i++) \
-      *(arithmetic_type*)((byte_ptr_type)mem + i * sizeof(type)) = sizeof(type); \
-  } else { \
-    name.avail = 0; \
-  } \
-  name.avail; \
-})
+#define init_mem(name, type, mem, size) \
+  ({ \
+    if (size <= MAX_MEMORY_SIZE) { \
+      name.avail = name.start = (byte_ptr_type)mem; \
+      name.end = (byte_ptr_type)mem + (size - 1) * sizeof(type); \
+      *(guard_value_type*)name.end = MEMBLOCK_GUARD_VALUE; \
+      for (arithmetic_type i = 0; i < size - 1; i++) \
+        *(arithmetic_type*)((byte_ptr_type)mem + i * sizeof(type)) = sizeof(type); \
+    } else { \
+      name.avail = 0; \
+    } \
+    name.avail; \
+  })
 
 /**
  * @brief use_mem provides a pointer to a chunk of memory.
@@ -122,15 +129,16 @@ struct memblock {
  * @return A pointer of requested type pointing to a chunk of memory or zero if
  * the memory pool has been exhausted.
  */
-#define use_mem(type, block) ({ \
-  type *__obj = 0; \
-  if (block.avail && _chk_bounds(block.avail, block.start, block.end)) { \
-    __obj = (type *)block.avail; \
-    block.avail = (*(guard_value_type*)block.avail == MEMBLOCK_GUARD_VALUE) ? \
-    0 : block.avail + *(arithmetic_type*)block.avail; \
-  } \
-  __obj; \
-})
+#define use_mem(type, block) \
+  ({ \
+    type *__obj = 0; \
+    if (block.avail && _chk_bounds(block.avail, block.start, block.end)) { \
+      __obj = (type *)block.avail; \
+      block.avail = (*(guard_value_type*)block.avail == MEMBLOCK_GUARD_VALUE) ? \
+      0 : block.avail + *(arithmetic_type*)block.avail; \
+    } \
+    __obj; \
+  })
 
 /**
  * @brief free_mem relinquishes a chunk of memory.
